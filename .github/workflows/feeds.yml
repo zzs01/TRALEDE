@@ -71,6 +71,7 @@ jobs:
     - name: Load custom configuration
       env:
         CONFIG_FILE: 'feeds.config'
+      run: echo "feeds complete"
 
     - name : Upload feeds
       uses: actions/upload-artifact@master

@@ -5,7 +5,7 @@
 # Blog: https://p3terx.com
 #=================================================
 
-name: Build OpenWrt
+name: Init feeds
 
 on: 
   release:
@@ -14,7 +14,7 @@ on:
     branches: 
       - master
     paths:
-      - 'R2S.config'
+      - 'feeds.config'
 #  schedule:
 #    - cron: 0 8 * * 5
   watch:
@@ -67,11 +67,6 @@ jobs:
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
-
-    - name: Load custom configuration
-      env:
-        CONFIG_FILE: 'feeds.config'
-      run: echo "feeds complete"
 
     - name : Upload feeds
       uses: actions/upload-artifact@master

@@ -71,9 +71,11 @@ jobs:
     - name: Load custom configuration
       env:
         CONFIG_FILE: 'shumeipai.config'
+        DTS_FILE: 'shumeipai.dts'
         DIY_SH: 'diy.sh'
       run: |
         [ -e files ] && mv files openwrt/files
+        [ -e $DTS_FILE ] && cp -f $DTS_FILE openwrt/target/linux/ramips/dts/MT7628.dts
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x $DIY_SH
         cd openwrt

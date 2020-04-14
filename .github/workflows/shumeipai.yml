@@ -72,10 +72,12 @@ jobs:
       env:
         CONFIG_FILE: 'shumeipai.config'
         DTS_FILE: 'shumeipai.dts'
+        DTSI_FILE: 'shumeipai.dtsi'
         DIY_SH: 'diy.sh'
       run: |
         [ -e files ] && mv files openwrt/files
-        [ -e $DTS_FILE ] && rm -rf openwrt/target/linux/ramips/image/mt76x8.mk && mv $DTS_FILE openwrt/target/linux/ramips/image/mt76x8.mk
+        [ -e $DTS_FILE ] && cp -f $DTS_FILE openwrt/target/linux/ramips/image/mt76x8.mk
+        [ -e $DTSI_FILE ] && cp -f $DTSI_FILE openwrt/target/linux/ramips/dts/mt7628an.dtsi
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x $DIY_SH
         cd openwrt

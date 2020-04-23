@@ -75,7 +75,7 @@ jobs:
         MK_FILE: 'shumeipai.mk'
       run: |
         [ -e files ] && mv files openwrt/files
-        [ -e $MK_FILE ] && cp -f $MK_FILE openwrt/target/linux/ar71xx/image/generic-tp-link.mk
+        [ -e $MK_FILE ] && cp -f $MK_FILE openwrt/target/linux/ramips/image/mt7620.mk
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x $DIY_SH
         cd openwrt

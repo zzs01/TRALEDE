@@ -1,71 +1,210 @@
 /dts-v1/;
 
-#include "mt7628an.dtsi"
+/include/ "mt7628an.dtsi"
 
 / {
 	compatible = "mediatek,mt7628an-eval-board", "mediatek,mt7628an-soc";
 	model = "Mediatek MT7628AN evaluation board";
+	
+        chosen {
+                bootargs = "console=ttyS0,115200";
+        };
+
 
 	memory@0 {
 		device_type = "memory";
-		reg = <0x0 0x8000000>;
+		reg = <0x0 0x10000000>; //256MB RAM
+	//	reg = <0x0 0x8000000>; //128MB RAM
+	//	reg = <0x0 0x4000000>; //64MB RAM
 	};
-};
 
-&pinctrl {
-	state_default: pinctrl0 {
-		gpio {
-			ralink,group = "i2c";
-			ralink,function = "gpio";
+	pinctrl {
+		state_default: pinctrl0 {
+			gpio {
+		//		ralink,group = "i2c";
+		//		ralink,function = "gpio";
+			};
+			p0_led {
+				ralink,group = "p0_led_an";
+				ralink,function = "gpio";
+			};
+			p1_led {
+				ralink,group = "p1_led_an";
+				ralink,function = "gpio";
+			};
+			p2_led {
+				ralink,group = "p2_led_an";
+				ralink,function = "gpio";
+			};
+			p3_led {
+				ralink,group = "p3_led_an";
+				ralink,function = "gpio";
+			};
+			p4_led {
+				ralink,group = "p4_led_an";
+				ralink,function = "gpio";
+			};
+			spis {
+				ralink,group = "spis";
+				ralink,function = "pwm_uart2";
+			};
+                        pwm1 {
+                                ralink,group = "pwm1";
+                                ralink,function = "gpio";
+                        };
+                        pwm0 {
+                                ralink,group = "pwm0";
+                                ralink,function = "gpio";
+                        };
+
+			refclk {
+				ralink,group = "refclk";
+				ralink,function = "gpio";
+			};
+			gpio_0 {
+				ralink,group = "gpio";
+//				ralink,function = "refclk_fc";
+				ralink,function = "gpio";
+			};
+                        i2s {
+                                ralink,group = "i2s";
+                                ralink,function = "i2s";
+                        };
+
+
 		};
+
+	        uart2_pins: uart2 {
+        		uart2 {
+                		ralink,group = "uart2";
+                        	ralink,function = "pwm";
+                       	 };
+		};
+	
 	};
-};
 
-&wmac {
-	status = "okay";
-};
+	palmbus@10000000 {
+                i2c@900 {
+                        status = "okay";
+                };
 
-&spi0 {
-	status = "okay";
+		spi@b00 {
+			status = "okay";
 
-	m25p80@0 {
-		compatible = "jedec,spi-nor";
-		reg = <0>;
-		spi-max-frequency = <10000000>;
-		m25p,chunked-io = <32>;
+			m25p80@0 {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				compatible = "en25q64";
+				reg = <0 0>;
+				linux,modalias = "w25q64", "w25q128", "w25q256";
+				spi-max-frequency = <10000000>;
+				m25p,chunked-io = <32>;
 
-		partitions {
-			compatible = "fixed-partitions";
-			#address-cells = <1>;
-			#size-cells = <1>;
+				partition@0 {
+					label = "u-boot";
+					reg = <0x0 0x30000>;
+					read-only;
+				};
 
-			partition@0 {
-				label = "u-boot";
-				reg = <0x0 0x30000>;
-				read-only;
-			};
+				partition@30000 {
+					label = "u-boot-env";
+					reg = <0x30000 0x10000>;
+					read-only;
+				};
 
-			partition@30000 {
-				label = "u-boot-env";
-				reg = <0x30000 0x10000>;
-				read-only;
-			};
+				factory: partition@40000 {
+					label = "factory";
+					reg = <0x40000 0x10000>;
+					read-only;
+				};
 
-			factory: partition@40000 {
-				label = "factory";
-				reg = <0x40000 0x10000>;
-				read-only;
-			};
-
-			partition@50000 {
-				compatible = "denx,uimage";
-				label = "firmware";
-				reg = <0x50000 0xfb0000>;
+				partition@50000 {
+					label = "firmware";
+				//	reg = <0x50000 0x7b0000>; //8MB flash
+				//	reg = <0x50000 0xfb0000>; //16MB flash
+					reg = <0x50000 0x1fb0000>; //32MB flash
+				};
 			};
 		};
-	};
-};
+                uart1@d00 {
+                        status = "okay";
+                };
 
-&wmac {
-	status = "okay";
+                uart2@e00 {
+                        status = "okay";
+                };
+			
+	
+	};
+        sdhci@10130000 {
+                status = "okay";
+                mediatek,cd-low;
+        };
+
+        ethernet@10100000 {
+                mtd-mac-address = <&factory 0x28>;
+        };
+
+        gpio-leds {
+                compatible = "gpio-leds";
+                
+		system {
+                        label = "mediatek:green:system";
+                        gpios = <&gpio1 5 1>;
+                        default-state = "off";
+                };
+		
+                wifi {
+                        label = "mediatek:green:wifi";
+                        gpios = <&gpio1 7 1>;
+                        default-state = "off";
+                };
+
+                wan {
+                        label = "mediatek:green:wan";
+                        gpios = <&gpio1 11 1>;
+                        default-state = "off";
+                };
+
+		
+                lan1 {
+                        label = "mediatek:green:lan_1";
+                        gpios = <&gpio1 10 1>;
+                        default-state = "off";
+                };
+
+                lan2 {
+                        label = "mediatek:green:lan_2";
+                        gpios = <&gpio1 8 1>;
+                        default-state = "off";
+                };
+
+        };
+
+        gpio-keys-polled {
+                compatible = "gpio-keys-polled";
+                #address-cells = <1>;
+                #size-cells = <0>;
+                poll-interval = <20>;
+
+                button_1 {
+                        label = "button_1";
+                        gpios = <&gpio1 6 0>;
+                        linux,code = <0x101>;
+                };
+
+                button_2 {
+                        label = "button_2";
+                        gpios = <&gpio1 9 0>;
+                        linux,code = <0x102>;
+                };
+		
+                button_3 {
+                        label = "button_3";
+                        gpios = <&gpio1 12 0>;
+                        linux,code = <0x103>;
+                };
+
+        };	
+
 };

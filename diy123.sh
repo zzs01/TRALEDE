@@ -8,7 +8,14 @@
 #=================================================
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.123.1/g' package/base-files/files/bin/config_generate
+# Modify hostname
 sed -i 's/OpenWrt/LinkSSR/g' package/base-files/files/bin/config_generate
+# Modify password
 sed -i 's/root::0:0:99999:7:::/root:\$1\$5IJBucpD\$Pq2tUZUM9KvFrW6\/zNynf\/:0:0:99999:7:::/g' package/base-files/files/etc/shadow ##密码 admin
-sed -i 's/OpenWrt/PDCN/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i 's/none/1234567890/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+# Modify wifi
+# sed -i 's/OpenWrt/PDCN/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i 's/none/psk2/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i '/set wireless.default_radio\${devidx}.encryption=psk2/a set wireless.default_radio\$\{devidx\}.key=1234567890' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i 's/set wireless.default_radio\${devidx}.ssid=OpenWrt/set wireless.default_radio0.ssid=PDCN_5G/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i '/set wireless.default_radio0.ssid=PDCN_5G/a set wireless.default_radio1.ssid=PDCN' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+

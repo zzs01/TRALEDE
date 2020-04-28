@@ -72,7 +72,7 @@ jobs:
       
     - name: Clear package
       run: |
-        [ -e openwrt/feeds/packages/lang/*golang* ] && rm openwrt/feeds/packages.tmp/info/*golang*
+        [ -f openwrt/feeds/packages/lang/*golang* ] && rm openwrt/feeds/packages.tmp/info/*golang*
         [ -d openwrt/feeds/packages/lang/golang ] && rm -rf openwrt/feeds/packages/lang/golang
       
     - name: Install feeds
